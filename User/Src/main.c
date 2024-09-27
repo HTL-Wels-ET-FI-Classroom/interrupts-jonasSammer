@@ -23,6 +23,8 @@
 
 /* Private define ------------------------------------------------------------*/
 
+GPIO_InitTypeDef pa0;
+
 /* Private variables ---------------------------------------------------------*/
 
 /* Private function prototypes -----------------------------------------------*/
@@ -71,6 +73,17 @@ int main(void)
 	LCD_SetFont(&Font8);
 	LCD_SetColors(LCD_COLOR_MAGENTA, LCD_COLOR_BLACK); // TextColor, BackColor
 	LCD_DisplayStringAtLineMode(39, "copyright xyz", CENTER_MODE);
+
+
+	pa0.Alternate=0;
+	pa0.Mode=GPIO_MODE_IT_RISING;
+	pa0.Pull = GPIO_NOPULL;
+	pa0.Pin = GPIO_PIN_0;
+	pa0.Speed = GPIO_SPEED_FAST;
+
+	HAL_GPIO_Init(GPIOA, &pa0);
+
+
 
 	int cntTimer1 = 0;
 	int cntTimer2 = 0;
