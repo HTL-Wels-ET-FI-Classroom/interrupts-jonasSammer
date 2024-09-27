@@ -75,6 +75,8 @@ int main(void)
 	LCD_DisplayStringAtLineMode(39, "copyright xyz", CENTER_MODE);
 
 
+
+
 	pa0.Alternate=0;
 	pa0.Mode=GPIO_MODE_IT_RISING;
 	pa0.Pull = GPIO_NOPULL;
@@ -83,6 +85,7 @@ int main(void)
 
 	HAL_GPIO_Init(GPIOA, &pa0);
 
+	HAL_NVIC_EnableIRQ());
 
 
 	int cntTimer1 = 0;
