@@ -72,7 +72,10 @@ int main(void)
 	LCD_SetColors(LCD_COLOR_MAGENTA, LCD_COLOR_BLACK); // TextColor, BackColor
 	LCD_DisplayStringAtLineMode(39, "copyright xyz", CENTER_MODE);
 
-	int cnt = 0;
+	int cntTimer1 = 0;
+	int cntTimer2 = 0;
+	int toggleUserbutton=0;
+	int toggle_hlfm=1;
 	/* Infinite loop */
 	while (1)
 	{
@@ -80,17 +83,70 @@ int main(void)
 		HAL_Delay(100);
 
 		// display timer
-		cnt++;
+
+
 		LCD_SetFont(&Font20);
 		LCD_SetTextColor(LCD_COLOR_BLUE);
-		LCD_SetPrintPosition(5, 0);
-		printf("   Timer: %.1f", cnt/10.0);
+		LCD_SetPrintPosition(3, 0);
+		printf("   EXTI Interupt");
+
+
+		if(toggleUserbutton==0){
+			cntTimer1++;
+			LCD_SetPrintPosition(5, 0);
+			printf("  Timer1: %.1f", cntTimer1/10.0);
+		}else if(toggleUserbutton==1){
+			cntTimer2++;
+			LCD_SetPrintPosition(6, 0);
+			printf("  Timer2: %.1f", cntTimer2/10.0);
+		}
+
+
+		if(GetUserButtonPressed()){
+			if(toggleUserbutton==0 && toggle_hlfm==1){
+				toggleUserbutton=1;
+				toggle_hlfm=0;
+			}else if(toggleUserbutton==1 && toggle_hlfm==1){
+				toggleUserbutton=0;
+				toggle_hlfm=0;
+			}
+		}else{
+		toggle_hlfm=1;
+		}
+
+
+
+
 
 		// test touch interface
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		int x, y;
 		if (GetTouchState(&x, &y)) {
 			LCD_FillCircle(x, y, 5);
 		}
+
+
+
+
+
+
+
+
+
 
 
 	}
