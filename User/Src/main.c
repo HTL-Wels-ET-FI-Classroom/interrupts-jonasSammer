@@ -18,7 +18,9 @@
 #include "ts_calibration.h"
 
 /* Private includes ----------------------------------------------------------*/
-
+volatile static int toggleUserbutton=0;
+static int cntTimer1 = 0;
+static int cntTimer2 = 0;
 /* Private typedef -----------------------------------------------------------*/
 
 /* Private define ------------------------------------------------------------*/
@@ -37,12 +39,26 @@ static int GetTouchState (int *xCoord, int *yCoord);
 void SysTick_Handler(void)
 {
 	HAL_IncTick();
-}
+	if(toggleUserbutton==0){
+		cntTimer1++;
 
+	}else if(toggleUserbutton==1){
+		cntTimer2++;
+	}
+}
+void EXTI0_IRQHandler(void){
+	__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
+
+	toggleUserbutton = !toggleUserbutton;
+
+
+
+}
 /**
  * @brief  The application entry point.
  * @retval int
  */
+
 int main(void)
 {
 	/* MCU Configuration--------------------------------------------------------*/
@@ -85,18 +101,18 @@ int main(void)
 
 	HAL_GPIO_Init(GPIOA, &pa0);
 
-	HAL_NVIC_EnableIRQ());
+	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
 
-	int cntTimer1 = 0;
-	int cntTimer2 = 0;
-	int toggleUserbutton=0;
-	int toggle_hlfm=1;
+
+
 	/* Infinite loop */
+
+
 	while (1)
 	{
 		//execute main loop every 100ms
-		HAL_Delay(100);
+		HAL_Delay(10);
 
 		// display timer
 
@@ -108,27 +124,16 @@ int main(void)
 
 
 		if(toggleUserbutton==0){
-			cntTimer1++;
+			//cntTimer1++;
 			LCD_SetPrintPosition(5, 0);
-			printf("  Timer1: %.1f", cntTimer1/10.0);
+			printf("  Timer1: %.2f", cntTimer1/1000.0);
 		}else if(toggleUserbutton==1){
-			cntTimer2++;
+			//cntTimer2++;
 			LCD_SetPrintPosition(6, 0);
-			printf("  Timer2: %.1f", cntTimer2/10.0);
+			printf("  Timer2: %.2f", cntTimer2/1000.0);
 		}
 
 
-		if(GetUserButtonPressed()){
-			if(toggleUserbutton==0 && toggle_hlfm==1){
-				toggleUserbutton=1;
-				toggle_hlfm=0;
-			}else if(toggleUserbutton==1 && toggle_hlfm==1){
-				toggleUserbutton=0;
-				toggle_hlfm=0;
-			}
-		}else{
-		toggle_hlfm=1;
-		}
 
 
 
