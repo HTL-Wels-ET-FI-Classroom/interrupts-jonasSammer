@@ -103,8 +103,14 @@ int main(void)
 
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
-
-
+	LCD_SetFont(&Font20);
+	LCD_SetTextColor(LCD_COLOR_BLUE);
+	LCD_SetPrintPosition(3, 0);
+	printf("   EXTI Interupt");
+	LCD_SetPrintPosition(5, 0);
+	printf("  Timer1: %.2f", cntTimer1/1000.0);
+	LCD_SetPrintPosition(6, 0);
+	printf("  Timer2: %.2f", cntTimer2/1000.0);
 
 	/* Infinite loop */
 
@@ -117,10 +123,6 @@ int main(void)
 		// display timer
 
 
-		LCD_SetFont(&Font20);
-		LCD_SetTextColor(LCD_COLOR_BLUE);
-		LCD_SetPrintPosition(3, 0);
-		printf("   EXTI Interupt");
 
 
 		if(toggleUserbutton==0){
