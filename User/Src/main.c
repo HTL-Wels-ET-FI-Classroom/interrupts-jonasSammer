@@ -108,9 +108,9 @@ int main(void)
 	LCD_SetPrintPosition(3, 0);
 	printf("   EXTI Interupt");
 	LCD_SetPrintPosition(5, 0);
-	printf("  Timer1: %.2f", cntTimer1/1000.0);
+	printf("  Timer1: %.1f", cntTimer1/1000.0);
 	LCD_SetPrintPosition(6, 0);
-	printf("  Timer2: %.2f", cntTimer2/1000.0);
+	printf("  Timer2: %.1f", cntTimer2/1000.0);
 
 	/* Infinite loop */
 
