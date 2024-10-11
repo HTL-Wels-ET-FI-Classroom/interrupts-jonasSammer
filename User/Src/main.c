@@ -19,6 +19,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 volatile static int toggleUserbutton=0;
+volatile static int farbeTimer=0;
+volatile static int showTimernotused=0;
 static int cntTimer1 = 0;
 static int cntTimer2 = 0;
 /* Private typedef -----------------------------------------------------------*/
@@ -26,6 +28,7 @@ static int cntTimer2 = 0;
 /* Private define ------------------------------------------------------------*/
 
 GPIO_InitTypeDef pa0;
+GPIO_InitTypeDef pg3;
 
 /* Private variables ---------------------------------------------------------*/
 
@@ -46,14 +49,20 @@ void SysTick_Handler(void)
 		cntTimer2++;
 	}
 }
+void EXTI3_IRQHandler(void){
+	__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_3);
+
+	farbeTimer=!farbeTimer;
+
+}
+
+
 void EXTI0_IRQHandler(void){
 	__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
 
 	toggleUserbutton = !toggleUserbutton;
-
-
-
 }
+
 /**
  * @brief  The application entry point.
  * @retval int
@@ -99,9 +108,21 @@ int main(void)
 	pa0.Pin = GPIO_PIN_0;
 	pa0.Speed = GPIO_SPEED_FAST;
 
+	pg3.Alternate=0;
+	pg3.Mode=GPIO_MODE_IT_RISING;
+	pg3.Pull = GPIO_NOPULL;
+	pg3.Pin = GPIO_PIN_3;
+	pg3.Speed = GPIO_SPEED_FAST;
+
+
 	HAL_GPIO_Init(GPIOA, &pa0);
+	HAL_GPIO_Init(GPIOG, &pg3);
+
 
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+	HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+
+
 
 	LCD_SetFont(&Font20);
 	LCD_SetTextColor(LCD_COLOR_BLUE);
@@ -118,23 +139,22 @@ int main(void)
 	while (1)
 	{
 		//execute main loop every 100ms
-		HAL_Delay(10);
+		HAL_Delay(100);
 
 		// display timer
 
+		if(! farbeTimer){
 
+			LCD_SetTextColor(LCD_COLOR_BLUE);
+		}else if(farbeTimer){
 
-
-		if(toggleUserbutton==0){
-			//cntTimer1++;
-			LCD_SetPrintPosition(5, 0);
-			printf("  Timer1: %.2f", cntTimer1/1000.0);
-		}else if(toggleUserbutton==1){
-			//cntTimer2++;
-			LCD_SetPrintPosition(6, 0);
-			printf("  Timer2: %.2f", cntTimer2/1000.0);
+			LCD_SetTextColor(LCD_COLOR_RED);
 		}
 
+			LCD_SetPrintPosition(5, 0);
+			printf("  Timer1: %.2f", cntTimer1/1000.0);
+			LCD_SetPrintPosition(6, 0);
+			printf("  Timer2: %.2f", cntTimer2/1000.0);
 
 
 
